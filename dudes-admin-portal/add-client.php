@@ -13,7 +13,7 @@ if(isset($_POST)) {
 		$CustomerType = $_POST['CustomerType'];
 
 
-my_var_dump(db_query("INSERT INTO `CustomerInfo` (CustomerName, CustomerCompany, CustomerAddress, CustomerCity, CustomerZip, CustomerState, CustomerPhone, CustomerEmail, CustomerType) VALUES($CustomerName, $CustomerCompany, $CustomerAddress, $CustomerCity, $CustomerZip, $CustomerState, $CustomerPhone, $CustomerEmail, $CustomerType)"));
+my_var_dump(db_query("INSERT INTO `CustomerInfo` (CustomerName, CustomerCompany, CustomerAddress, CustomerCity, CustomerZip, CustomerState, CustomerPhone, CustomerEmail, CustomerType) VALUES(`$CustomerName`, `$CustomerCompany`, `$CustomerAddress`, `$CustomerCity`, `$CustomerZip`, `$CustomerState`, `$CustomerPhone`, `$CustomerEmail`, `$CustomerType`)"));
 
 
 }

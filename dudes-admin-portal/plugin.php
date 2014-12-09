@@ -18,6 +18,9 @@
 		case 'functions':
 			include('customer-type.php');
 			break;
+		case 'add-client':
+			include('add-client.php');
+			break;
 		case 'find-client':
 			include('find-client.php');
 			break;

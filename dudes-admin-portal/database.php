@@ -1,4 +1,7 @@
 <?php
+
+define('APP_DB_DRIVER', 'mysql');
+
 function db_connect() {
 	try {
 		$drivers = PDO::getAvailableDrivers();
@@ -32,19 +35,16 @@ function db_connect() {
 function db_close() {
 	global $app_db, $app_db_log;
 	$app_db = NULL;
-	if (APP_ENABLE_DATABASE_LOGGING && isset($app_db_log)) {
-		file_append_log(APP_SYSTEM_DIR."/logs/database_all_queries.txt", $app_db_log.chr(10).chr(10));
-	}
 }
 function db_query($sql, $data=NULL) {
 	global $app_db, $app_db_queries, $app_db_log;
-	if (APP_ENABLE_DATABASE_LOGGING) {
-		$start_time = current_microseconds();
-		if (!isset($app_db_log)) {
-			$app_db_log = get_log_time();
-		}
-		$app_db_log .= $sql.chr(10);
-	}
+	// if (APP_ENABLE_DATABASE_LOGGING) {
+	// 	// $start_time = current_microseconds();
+	// 	// if (!isset($app_db_log)) {
+	// 	// 	$app_db_log = get_log_time();
+	// 	// }
+	// 	// $app_db_log .= $sql.chr(10);
+	// }
 	try {
 		if (!isset($app_db)) {
 			$app_db = db_connect();
@@ -83,9 +83,9 @@ function db_query($sql, $data=NULL) {
 			$statement->setFetchMode(PDO::FETCH_NUM);
 			$output = $statement->fetchAll();
 		}
-		if (APP_ENABLE_DATABASE_LOGGING) {
-			$app_db_log .= time_since_rounded($start_time, 1).' microsecond duration'.chr(10);
-		}
+		// if (APP_ENABLE_DATABASE_LOGGING) {
+		// 	$app_db_log .= time_since_rounded($start_time, 1).' microsecond duration'.chr(10);
+		// }
 		return $output;
 	}
 	catch(PDOException $e) {
@@ -113,6 +113,6 @@ function db_get_current_allowed_packet() {
 	return $current;
 }
 function db_error($e, $sql="N/A", $data=NULL) {
-	error_notify_and_log("database", $e->getMessage(), $sql, $data);
+	//error_notify_and_log("database", $e->getMessage(), $sql, $data);
 }
 ?>

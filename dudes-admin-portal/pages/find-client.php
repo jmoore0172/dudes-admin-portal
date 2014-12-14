@@ -3,7 +3,7 @@ function shortcode_admin_find_client( $atts ){
 	ob_start();
 ?>
 <div class="Form-Handle">
-	<form action="<?php echo get_bloginfo('url').'/add-job/' ?>" method="GET">Customers:
+	<form action="<?php echo get_bloginfo('url').'/manage/jobs/add/' ?>" method="GET">Customers:
 		<p><select name="customer_id">
 			<?php
 				$result = db_query("SELECT * FROM `CustomerInfo`");

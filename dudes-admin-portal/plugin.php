@@ -19,26 +19,13 @@ function check_if_logged_in() {
 }
 add_action( 'wp_loaded', 'check_if_logged_in' );
 
+include('config.php');
+include('database.php');
+include('functions.php');
 
-	include('config.php');
-	include('database.php');
-	include('functions.php');
-	switch(getslug()){ 
-		case 'functions':
-			include('customer-type.php');
-			break;
-		case 'add-client':
-			include('add-client.php');
-			break;
-		case 'find-client':
-			include('find-client.php');
-			break;
-		case 'select-device':
-			include('select-device.php');
-			break;
-		case 'select-job':
-			include('select-job.php');
-			break;
- 	}
-
+include('pages/customer-type.php');
+include('pages/add-client.php');
+include('pages/find-client.php');
+include('pages/select-device.php');
+include('pages/add-job.php');
 ?>

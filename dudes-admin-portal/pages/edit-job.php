@@ -21,6 +21,8 @@ function shortcode_admin_edit_job_form( $atts ){
 			<?php }
 			
 			echo '</ul>';
+		} else {
+			echo '<p>No applicable jobs found. <a href="'.get_bloginfo('url').'/manage/jobs/start/">Start a Job &gt;</a></p>';
 		}
 		
 	} else {

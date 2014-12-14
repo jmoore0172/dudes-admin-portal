@@ -5,9 +5,28 @@ function shortcode_admin_finish_job_form( $atts ){
 	$submitted = !empty($_POST);
 	
 	if (!isset($_REQUEST['job_id'])) {
-		die('No Job ID specified.');
-	}
-	if (!$submitted) {
+		$jobs = db_query("SELECT * FROM JobInfo WHERE EndDate IS NOT NULL AND (HideJob <> '1' OR HideJob IS NULL) ORDER BY JobID DESC");
+		
+		if ($jobs && !empty($jobs)) {
+			echo '<h2>Finished Jobs</h2><ul>';
+			
+			foreach($jobs as $job) {
+				$customer = db_query("SELECT * FROM CustomerInfo WHERE CustomerID = ".$job['CustomerID']);
+				$customer = $customer[0];
+				?>
+				<li>
+					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $job['JobID']; ?>">Edit</a> &nbsp;|&nbsp;
+					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/finish/?job_id=<?php echo $job['JobID']; ?>">Finish</a> &mdash;
+					<strong><?php echo $customer['CustomerName']; ?></strong> : <?php echo $job['JobType']; ?>
+				</li>
+			<?php }
+			
+			echo '</ul>';
+		} else {
+			echo '<p>No finished jobs found. <a href="'.get_bloginfo('url').'/manage/jobs/edit/">Edit a Job &gt;</a></p>';
+		}
+		
+	} elseif (!$submitted) {
 		$job = db_query("SELECT * FROM JobInfo WHERE JobID = ".$_REQUEST['job_id']);
 		$job = $job[0];
 		$customer = db_query("SELECT * FROM CustomerInfo WHERE CustomerID = ".$job['CustomerID']);

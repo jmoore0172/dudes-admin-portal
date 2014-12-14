@@ -115,4 +115,17 @@ function db_get_current_allowed_packet() {
 function db_error($e, $sql="N/A", $data=NULL) {
 	//error_notify_and_log("database", $e->getMessage(), $sql, $data);
 }
+
+function db_update($table, $data, $where) {
+	if (!empty($data)) {
+		$sql = "UPDATE " . $table . ' SET ';
+		foreach( $data as $key => $value ) {
+			$sql .= $key. " = '" . $value . "', ";
+		}
+		$sql = $sql . "ModifyDate=CURRENT_TIMESTAMP WHERE ".$where;
+		//my_var_dump($sql);
+		return db_query($sql);
+	}
+	return false;
+}
 ?>

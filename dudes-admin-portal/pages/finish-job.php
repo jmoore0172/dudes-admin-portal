@@ -2,24 +2,42 @@
 function shortcode_admin_finish_job_form( $atts ){
 	global $the_dudes, $job_type, $device_type, $general_form_error_msg;
 	ob_start();
+	$submitted = !empty($_POST);
+	
 	if (!isset($_REQUEST['job_id'])) {
 		die('No Job ID specified.');
 	}
-	if (!isset($_REQUEST['JobStart'])) {
-		$job = db_query('SELECT * FROM `JobInfo` WHERE JobID = \''.$_REQUEST['job_id'].'\'');
+	if (!$submitted) {
+		$job = db_query("SELECT * FROM JobInfo WHERE JobID = ".$_REQUEST['job_id']);
 		$job = $job[0];
-		$customer = db_query('SELECT * FROM `CustomerInfo` WHERE CustomerID = \''.$job['CustomerID'].'\'');
+		$customer = db_query("SELECT * FROM CustomerInfo WHERE CustomerID = ".$job['CustomerID']);
+		foreach($the_dudes as $dude) {
+			if ($job['DudeID'] == $dude['wordpress_id']) {
+				$this_dude = $dude;
+				break;
+			}
+		}
+		
 ?>
-
 <div class="Form-Handle">
 	<h2>Finishing Job for: <?php echo $customer[0]['CustomerName']; ?></h2>
     <form action="" method="POST">
-        <input type="hidden" value="<?php echo $_REQUEST['job_id']; ?>" />
+        <input type="hidden" value="<?php echo $_REQUEST['job_id']; ?>" name="JobID" />
         <p>
         	End Date: <input name="EndDate" type="text" class="datepicker" value="<?php echo date('Y-m-d'); ?>" />
         </p>
         <p>
-        	Dude Rate: <input name="DudeRate" type="text" />
+        	Dude Rate ($/hour): <input type="text" value="<?php echo $this_dude['rate']; ?>" disabled="disabled" />
+        						<input name="DudeRate" type="hidden" value="<?php echo $this_dude['rate']; ?>" />
+        </p>
+        <p>
+        	Hours on the Job: <input name="JobHours" type="text" />
+        </p>
+        <p>
+        	Job Notes (visible to client): <textarea name="JobNotes"></textarea>
+        </p>
+        <p>
+        	Job Notes (private): <textarea name="JobNotesPriv"></textarea>
         </p>
         <p>
             <input type="submit" value="Finish Job" />
@@ -29,16 +47,28 @@ function shortcode_admin_finish_job_form( $atts ){
 
 <?php
 	} else {
-		$sql = 'INSERT INTO `JobInfo` (CustomerID, JobType, StartDate, DudeID, DeviceType) VALUES (\''.$_REQUEST['customer_id'].'\', \''.$_REQUEST['JobType'].'\', \''.$_REQUEST['JobStart'].'\', \''.$_REQUEST['JobDude'].'\', \''.$_REQUEST['DeviceType'].'\')';
 		
-		$id = db_query($sql);
-		
-		if ($id) {
-			echo '<p>Job Added Successfully.</p><p><a href="/manage/jobs/edit/?job_id='.$id.'">Edit Job &gt;</a> &nbsp; <a href="/manage/jobs/finish/?job_id='.$id.'">Finish Job &gt;</a></p>';
+		if (isset($_REQUEST['EndDate'])) {
+			$data = array(
+				'EndDate'		=> $_REQUEST['EndDate'],
+				'DudeRate'		=> floatval($_REQUEST['DudeRate']),
+				'InvoiceRate'	=> floatval($the_dudes[0]['rate']),
+				'JobHours'		=> floatval($_REQUEST['JobHours']),
+				'DudeTotal'		=> floatval($_REQUEST['DudeRate']) * floatval($_REQUEST['JobHours']),
+				'InvoiceTotal'	=> floatval($the_dudes[0]['rate']) * floatval($_REQUEST['JobHours']),
+				'JobNotes'		=> $_REQUEST['JobNotes'],
+				'JobNotesPriv'	=> $_REQUEST['JobNotesPriv'],
+				'LastModifiedBy'=> get_current_user_id()
+			);
+			
+			if ( db_update('JobInfo', $data, "JobID=".$_REQUEST['job_id']) ) {
+				echo '<p>Job Finished Successfully.</p>';
+			} else {
+				echo $general_form_error_msg;
+			}
 		} else {
 			echo $general_form_error_msg;
 		}
-
 	}
 	return ob_get_clean();
 }

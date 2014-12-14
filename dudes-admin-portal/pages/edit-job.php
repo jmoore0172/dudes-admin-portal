@@ -4,13 +4,13 @@ function shortcode_admin_edit_job_form( $atts ){
 	ob_start();
 	
 	if (!isset($_REQUEST['job_id'])) {
-		$jobs = db_query('SELECT * FROM `JobInfo` WHERE EndDate IS NULL AND HideJob <> 1 ORDER BY JobID DESC');
+		$jobs = db_query("SELECT * FROM JobInfo WHERE EndDate IS NULL AND (HideJob <> '1' OR HideJob IS NULL) ORDER BY JobID DESC");
 		
 		if ($jobs && !empty($jobs)) {
 			echo '<ul>';
 			
 			foreach($jobs as $job) {
-				$customer = db_query('SELECT * FROM `CustomerInfo` WHERE CustomerID = '.$job['CustomerID']);
+				$customer = db_query("SELECT * FROM CustomerInfo WHERE CustomerID = ".$job['CustomerID']);
 				$customer = $customer[0];
 				?>
 				<li>
@@ -25,7 +25,7 @@ function shortcode_admin_edit_job_form( $atts ){
 		
 	} else {
 	
-		$job = db_query('SELECT * FROM `JobInfo` WHERE JobID = \''.$_REQUEST['job_id'].'\'');
+		$job = db_query("SELECT * FROM JobInfo WHERE JobID = ".$_REQUEST['job_id']);
 		
 		if (!isset($job) || empty($job)) {
 			die('Job not found.');
@@ -34,7 +34,7 @@ function shortcode_admin_edit_job_form( $atts ){
 		}
 		
 		if (!isset($_REQUEST['JobType'])) {
-			$customer = db_query('SELECT CustomerName FROM `CustomerInfo` WHERE CustomerID = \''.$job['CustomerID'].'\'');
+			$customer = db_query("SELECT CustomerName FROM CustomerInfo WHERE CustomerID = ".$job['CustomerID']);
 ?>
 
 <div class="Form-Handle">
@@ -49,10 +49,16 @@ function shortcode_admin_edit_job_form( $atts ){
 
 <?php
 		} else {
-			$sql = 'UPDATE `JobInfo` SET JobType=\''.$_REQUEST['JobType'].'\', DudeID=\''.$_REQUEST['JobDude'].'\', DeviceType=\''.$_REQUEST['DeviceType'].'\' WHERE JobID='.$job['JobID'];
-			$id = db_query($sql);
+			$data = array(
+				'JobType' 		=> $_REQUEST['JobType'],
+				'DudeID' 		=> $_REQUEST['JobDude'],
+				'DeviceType' 	=> $_REQUEST['DeviceType'],
+				'HideJob'		=> isset($_REQUEST['HideJob']) ? $_REQUEST['HideJob'] : '0',
+				'LastModifiedBy'=> get_current_user_id()
+			);
+			$result = db_update('JobInfo', $data, "JobID=".$_REQUEST['job_id']);
 			
-			if (isset($id)) { ?>
+			if (isset($result)) { ?>
 				<p>Job Edited Successfully.</p>
 				<p>
 					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $_REQUEST['job_id']; ?>">Edit Job Again &gt;</a> &nbsp;

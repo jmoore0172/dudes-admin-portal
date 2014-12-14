@@ -31,3 +31,9 @@ endif;
         <?php endforeach; ?>
     </select>
 </p>
+
+<?php if (!isset($adding_job)) : ?>
+<p>
+	<label><input type="checkbox" name="HideJob" value="1" <?php if ($job['HideJob'] == 1) { echo ' checked="checked"'; } ?> /> Hide Job</label>
+</p>
+<?php endif; ?>

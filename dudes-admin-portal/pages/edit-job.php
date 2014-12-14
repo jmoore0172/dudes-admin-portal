@@ -3,7 +3,22 @@ function shortcode_admin_edit_job_form( $atts ){
 	ob_start();
 	
 	if (!isset($_REQUEST['job_id'])) {
-		die('Error: No Job ID specified.');
+		$jobs = db_query('SELECT * FROM `JobInfo` WHERE EndDate IS NULL ORDER BY JobID DESC');
+		
+		if ($jobs && !empty($jobs)) {
+			echo '<ul>';
+			
+			foreach($jobs as $job) {
+				$customer = db_query('SELECT * FROM `CustomerInfo` WHERE CustomerID = '.$job['CustomerID']);
+				$customer = $customer[0];
+				?>
+				
+				<li><a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $job['JobID']; ?>">Edit Job</a> &mdash; <?php echo $customer['CustomerName']; ?> : <?php echo $job['JobType']; ?></li>
+			<?php }
+			
+			echo '</ul>';
+		}
+		
 	} else {
 	
 		$job = db_query('SELECT * FROM `JobInfo` WHERE JobID = \''.$_REQUEST['job_id'].'\'');
@@ -33,9 +48,14 @@ function shortcode_admin_edit_job_form( $atts ){
 			$sql = 'UPDATE `JobInfo` SET JobType=\''.$_REQUEST['JobType'].'\', DudeID=\''.$_REQUEST['JobDude'].'\', DeviceType=\''.$_REQUEST['DeviceType'].'\' WHERE JobID='.$job['JobID'];
 			$id = db_query($sql);
 			
-			if (isset($id)) {
-				echo '<p>Job Edited Successfully.</p><p><a href="/manage/jobs/edit/?job_id='.$_REQUEST['job_id'].'">Edit Job Again &gt;</a> &nbsp; <a href="/manage/jobs/finish/?job_id='.$_REQUEST['job_id'].'">Finish Job &gt;</a></p>';
-			} else {
+			if (isset($id)) { ?>
+				<p>Job Edited Successfully.</p>
+				<p>
+					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $_REQUEST['job_id']; ?>">Edit Job Again &gt;</a> &nbsp;
+					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/finish/?job_id=<?php echo $_REQUEST['job_id']; ?>">Finish Job &gt;</a> &nbsp;
+					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/">Edit Other Jobs &gt;</a>
+				</p>
+			<?php } else {
 				echo '<p>WTF Mate, fill out form correctly.</p>';
 			}
 		}

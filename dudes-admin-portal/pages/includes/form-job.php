@@ -29,22 +29,22 @@ $device_type = array(
         <option value="NULL">(Select)</option>
         
         <?php foreach($job_type as $type) : ?>
-			<option<?php echo form_selected_state($job['JobType'], $type); ?>><?php echo $type; ?></option>
+			<option<?php echo isset($job) ? form_selected_state($job['JobType'], $type) : ''; ?>><?php echo $type; ?></option>
         <?php endforeach; ?>
     </select>
 </p>
 <p>Dude:
     <select name="JobDude">
         <option value="NULL">(Select)</option>
-        <option value="1"<?php echo form_selected_state($job['DudeID'], 1); ?>>Justin Moore</option>
-        <option value="2"<?php echo form_selected_state($job['DudeID'], 2); ?>>Jason Osborne</option>
+        <option value="1"<?php echo isset($job) ? form_selected_state($job['DudeID'], 1) : ''; ?>>Justin Moore</option>
+        <option value="2"<?php echo isset($job) ? form_selected_state($job['DudeID'], 2) : ''; ?>>Jason Osborne</option>
     </select>
 </p>
 <p>Device Type:
     <select name="DeviceType">
         <option value="NULL">(Select)</option>
         <?php foreach($device_type as $type) : ?>
-			<option<?php echo form_selected_state($job['DeviceType'], $type); ?>><?php echo $type; ?></option>
+			<option<?php echo isset($job) ? form_selected_state($job['DeviceType'], $type) : ''; ?>><?php echo $type; ?></option>
         <?php endforeach; ?>
     </select>
 </p>

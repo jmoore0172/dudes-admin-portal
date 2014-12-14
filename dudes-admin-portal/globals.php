@@ -1,5 +1,6 @@
 <?php
 $general_form_error_msg = '<p>WTF Mate, Uz musta done sumptin wrong, yo.</p> <p><a href="javascript:window.history.go(-1);">&lt; Go Back and Fix Them Shiz</a></p>';
+$invoice_footer_msg = '<p><small>Please make checks payable to Justin Moore.</small></p>';
 
 $job_type = array(
 	"Computer Repair",

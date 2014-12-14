@@ -28,6 +28,10 @@ function form_selected_state($val1, $val2) {
 	return (isset($val1) && isset($val2) && ($val1 == $val2)) ? ' selected="selected"' : '';
 }
 
+function format_cash($num) {
+	return '$' . number_format($num, 2);
+}
+
 function get_customer($id) {
 	$customer = db_query("SELECT * FROM CustomerInfo WHERE CustomerID = ".$id);
 	return isset($customer[0]) ? $customer[0] : false;

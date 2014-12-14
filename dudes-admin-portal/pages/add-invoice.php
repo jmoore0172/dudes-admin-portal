@@ -1,28 +1,34 @@
 <?php
 function shortcode_admin_add_invoice_form( $atts ){
+	global $general_form_error_msg, $invoice_footer_msg;
 	ob_start();
-	if (!isset($_REQUEST['JobStart'])) {
-		//$customer = db_query('SELECT CustomerName FROM `CustomerInfo` WHERE CustomerID = \''.$_REQUEST['customer_id'].'\'');
+	$submitted = !empty($_POST);
+	$job_selected = isset($_REQUEST['job_id']);
+	
+	if (!$submitted) {
 ?>
-
-<div class="Form-Handle">
-
-    <form action="" method="POST">
-        <?php $adding_invoice = true; include('includes/form-invoice.php'); ?>
-        <p>
-            <input type="submit" value="Add Job" />
-        </p>
-    </form>
+<div class="Form-Handle invoice-template">
+	<form action="" method="<?php echo ($job_selected) ? 'POST' : 'GET'; ?>">
+	    <?php $adding_invoice = true; include('includes/form-invoice.php'); ?>
+	    <p>
+	        <input type="submit" value="Create Invoice" />
+	    </p>
+	</form>
 </div>
-
 <?php
 	} else {
-		$sql = 'INSERT INTO `JobInfo` (CustomerID, JobType, StartDate, DudeID, DeviceType) VALUES (\''.$_REQUEST['customer_id'].'\', \''.$_REQUEST['JobType'].'\', \''.$_REQUEST['JobStart'].'\', \''.$_REQUEST['JobDude'].'\', \''.$_REQUEST['DeviceType'].'\')';
-		
-		$id = db_query($sql);
+		$data = array(
+			'CustomerID' 	=> $_REQUEST['CustomerID'],
+			'JobID' 		=> $_REQUEST['JobID'],
+			'LineItems' 	=> $_REQUEST['LineItems'],
+			'InvoiceTotal'	=> $_REQUEST['InvoiceTotal']
+		);
+		$id = db_insert('InvoiceInfo', $data);
 		
 		if ($id) {
-			echo '<p>Job Added Successfully.</p><p><a href="/manage/jobs/edit/?job_id='.$id.'">Edit Job &gt;</a> &nbsp; <a href="/manage/jobs/finish/?job_id='.$id.'">Finish Job &gt;</a></p>';
+			echo '<p>Invoice created successfully.</p>';
+			echo '<p><a href="'.get_bloginfo('url').'/invoice/edit/?invoice_id='.$id.'">Edit Invoice &gt;</a> &nbsp; ';
+			echo '<a href="'.get_bloginfo('url').'/invoice/send/?invoice_id='.$id.'">Send Invoice &gt;</a></p>';
 		} else {
 			echo $general_form_error_msg;
 		}

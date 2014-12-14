@@ -36,6 +36,7 @@ function admin_onload() {
 	include('pages/add-job.php');
 	include('pages/edit-job.php');
 	include('pages/finish-job.php');
+	include('pages/finished-jobs.php');
 	include('pages/archived-jobs.php');
 	include('pages/add-invoice.php');
 	include('pages/edit-invoice.php');

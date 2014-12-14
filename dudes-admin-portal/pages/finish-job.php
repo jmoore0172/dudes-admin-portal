@@ -21,6 +21,7 @@ function shortcode_admin_finish_job_form( $atts ){
 ?>
 <div class="Form-Handle">
 	<h2>Finishing Job for: <?php echo $customer[0]['CustomerName']; ?></h2>
+	<h3>The Dude: <?php echo $this_dude['name']; ?></h3>
     <form action="" method="POST">
         <input type="hidden" value="<?php echo $_REQUEST['job_id']; ?>" name="JobID" />
         <p>

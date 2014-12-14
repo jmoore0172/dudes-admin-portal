@@ -128,4 +128,20 @@ function db_update($table, $data, $where) {
 	}
 	return false;
 }
+function db_insert($table, $data) {
+	if (!empty($data)) {
+		$sql = "INSERT INTO " . $table . ' (';
+		foreach( $data as $key => $value ) {
+			$sql .= $key.', ';
+		}
+		$sql = rtrim($sql, ', '). ') VALUES (';
+		foreach( $data as $key => $value ) {
+			$sql .= "'" . $value . "', ";
+		}
+		$sql = rtrim($sql, ", ").")";
+		//my_var_dump($sql);
+		return db_query($sql);
+	}
+	return false;
+}
 ?>

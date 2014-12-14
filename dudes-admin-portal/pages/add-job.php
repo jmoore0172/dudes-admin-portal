@@ -3,11 +3,11 @@ function shortcode_admin_add_job_form( $atts ){
 	global $the_dudes, $job_type, $device_type, $general_form_error_msg;
 	ob_start();
 	if (!isset($_REQUEST['JobStart'])) {
-		$customer = db_query('SELECT CustomerName FROM `CustomerInfo` WHERE CustomerID = \''.$_REQUEST['customer_id'].'\'');
+		$customer = get_customer($_REQUEST['customer_id']);
 ?>
 
 <div class="Form-Handle">
-	<h2>Adding Job for: <?php echo $customer[0]['CustomerName']; ?></h2>
+	<h2>Adding Job for: <?php echo $customer['CustomerName']; ?></h2>
     <form action="" method="POST">
         <?php $adding_job = true; include('includes/form-job.php'); ?>
         <p>

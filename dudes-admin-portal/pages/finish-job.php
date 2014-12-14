@@ -8,9 +8,8 @@ function shortcode_admin_finish_job_form( $atts ){
 		echo '<script>window.location.href = "'.get_bloginfo('url').'/manage/jobs/edit'.'";</script>';
 		
 	} elseif (!$submitted) {
-		$job = db_query("SELECT * FROM JobInfo WHERE JobID = ".$_REQUEST['job_id']);
-		$job = $job[0];
-		$customer = db_query("SELECT * FROM CustomerInfo WHERE CustomerID = ".$job['CustomerID']);
+		$job = get_jobs($_REQUEST['job_id']);
+		$customer = get_customer($job['CustomerID']);
 		foreach($the_dudes as $dude) {
 			if ($job['DudeID'] == $dude['wordpress_id']) {
 				$this_dude = $dude;
@@ -20,7 +19,7 @@ function shortcode_admin_finish_job_form( $atts ){
 		
 ?>
 <div class="Form-Handle">
-	<h2>Finishing Job for: <?php echo $customer[0]['CustomerName']; ?></h2>
+	<h2>Finishing Job for: <?php echo $customer['CustomerName']; ?></h2>
 	<h3>The Dude: <?php echo $this_dude['name']; ?></h3>
     <form action="" method="POST">
         <input type="hidden" value="<?php echo $_REQUEST['job_id']; ?>" name="JobID" />

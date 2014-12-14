@@ -2,16 +2,16 @@
 function shortcode_admin_edit_job_form( $atts ){
 	global $the_dudes, $job_type, $device_type, $general_form_error_msg;
 	ob_start();
+	$submitted = isset($_REQUEST['job_id']);
 	
-	if (!isset($_REQUEST['job_id'])) {
-		$jobs = db_query("SELECT * FROM JobInfo WHERE EndDate IS NULL AND (HideJob <> '1' OR HideJob IS NULL) ORDER BY JobID DESC");
+	if (!$submitted) {
+		$jobs = get_jobs('open');
 		
 		if ($jobs && !empty($jobs)) {
 			echo '<ul>';
 			
 			foreach($jobs as $job) {
-				$customer = db_query("SELECT * FROM CustomerInfo WHERE CustomerID = ".$job['CustomerID']);
-				$customer = $customer[0];
+				$customer = get_customer($job['CustomerID']);
 				?>
 				<li>
 					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $job['JobID']; ?>">Edit</a> &nbsp;|&nbsp;
@@ -27,20 +27,18 @@ function shortcode_admin_edit_job_form( $atts ){
 		
 	} else {
 	
-		$job = db_query("SELECT * FROM JobInfo WHERE JobID = ".$_REQUEST['job_id']);
+		$job = get_jobs($_REQUEST['job_id']);
 		
-		if (!isset($job) || empty($job)) {
+		if (!$job) {
 			die('Job not found.');
-		} else {
-			$job = $job[0];
 		}
 		
 		if (!isset($_REQUEST['JobType'])) {
-			$customer = db_query("SELECT CustomerName FROM CustomerInfo WHERE CustomerID = ".$job['CustomerID']);
+			$customer = get_customer($job['CustomerID']);
 ?>
 
 <div class="Form-Handle">
-	<h2>Editing Job for: <?php echo $customer[0]['CustomerName']; ?></h2>
+	<h2>Editing Job for: <?php echo $customer['CustomerName']; ?></h2>
     <form action="" method="POST">
         <?php include('includes/form-job.php'); ?>
         <p>

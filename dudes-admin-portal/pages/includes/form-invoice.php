@@ -4,6 +4,8 @@
 .invoice-template td,
 .invoice-template th { padding: 4px; }
 .invoice-template .invoice-total { text-align: right; font-weight: bold; }
+.invoice-template td input { float: none !important; width: 80% !important; }
+.invoice-template .line-items .remove { margin-right: 6px; }
 </style>
 
 <?php if (!$job_selected) :
@@ -86,18 +88,51 @@
 	<tr>
 		<td>
 			<?= $job['JobType'] ?> - <?= $job['DeviceType'] ?>
+			<input type="hidden" name="description[<?= $job['JobID'] ?>]" value="<?= $job['JobType'] ?> - <?= $job['DeviceType'] ?>" />
 		</td>
 		<td>
 			<?= $job['JobHours'] ?>
+			<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $job['JobHours'] ?>" />
 		</td>
 		<td>
 			<?= format_cash($job['InvoiceRate']) ?>
+			<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $job['InvoiceRate'] ?>" />
 		</td>
 		<td class="rightalign">
 			<?= format_cash($job['InvoiceTotal']) ?>
+			<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $job['InvoiceTotal'] ?>" />
 		</td>
 	</tr>
 </table>
+
+<button class="add-item">Add Work Item</button>
+
+<script>
+(function($) {
+	$('button.add-item').on('click', function() {
+		var model = $('.line-items tr:nth-child(2)');
+		model.clone().each(function() {
+			var count = 0;
+			$(this).find('td').each(function() {
+				var field = $(this).find('input').clone().val('').attr('type', 'text');
+				$(this).html('').append(field);
+				
+				if (count == 0) {
+					$(this).prepend('<a class="remove" href="#">X</a>');
+				}
+				
+				count++;
+				
+				$(this).find('.remove').on('click', function() {
+					field.closest('tr').remove();
+					return false;
+				});
+			});
+		}).appendTo('.line-items');
+		return false;
+	});
+})(jQuery);
+</script>
 
 <div class="invoice-total">
 	Invoice Total: &nbsp; <?= format_cash($job['InvoiceTotal']) ?>

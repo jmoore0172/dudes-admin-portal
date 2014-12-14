@@ -11,8 +11,7 @@ function shortcode_admin_archived_jobs( $atts ){
 			$customer = $customer[0];
 			?>
 			<li>
-				<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $job['JobID']; ?>">Edit</a> &nbsp;|&nbsp;
-				<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/finish/?job_id=<?php echo $job['JobID']; ?>">Finish</a> &mdash;
+				<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $job['JobID']; ?>">Edit</a> &mdash;
 				<strong><?php echo $customer['CustomerName']; ?></strong> : <?php echo $job['JobType']; ?>
 			</li>
 		<?php }

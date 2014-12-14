@@ -24,7 +24,7 @@ function my_var_dump($var, $echo=false) {
                 echo $output;
         }
 }
-
-
-
+function form_selected_state($val1, $val2) {
+	return (isset($val1) && isset($val2) && ($val1 == $val2)) ? ' selected="selected"' : '';
+}
 ?>

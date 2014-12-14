@@ -33,6 +33,7 @@ function admin_onload() {
 	include('pages/find-client.php');
 	include('pages/select-device.php');
 	include('pages/add-job.php');
+	include('pages/edit-job.php');
 }
 
 add_action( 'wp_loaded', 'admin_onload' );

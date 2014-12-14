@@ -2,42 +2,13 @@
 function shortcode_admin_add_job_form( $atts ){
 	ob_start();
 	if (!isset($_REQUEST['JobStart'])) {
+		$customer = db_query('SELECT CustomerName FROM `CustomerInfo` WHERE CustomerID = \''.$_REQUEST['customer_id'].'\'');
 ?>
 
 <div class="Form-Handle">
+	<h2>Adding Job for: <?php echo $customer[0]['CustomerName']; ?></h2>
     <form action="" method="POST">
-        <p>Job Start Date
-            <input type="text" name="JobStart" class="datepicker" value="<?php echo date('Y-m-d'); ?>">
-        </p>
-        <p>Job Type:
-            <select name="JobType">
-                <option value="NULL">(Select)</option>
-                <option>Computer Repair</option>
-                <option>IT Support</option>
-                <option>Web Design</option>
-                <option>Networking</option>
-                <option>Other</option>
-            </select>
-        </p>
-        <p>Dude:
-            <select name="JobDude">
-                <option value="NULL">(Select)</option>
-                <option value="1">Justin Moore</option>
-                <option value="2">Jason Osborne</option>
-            </select>
-        </p>
-        <p>Device Type:
-            <select name="DeviceType">
-                <option value="NULL">(Select)</option>
-                <option>Laptop-PC</option>
-                <option>Desktop-PC</option>
-                <option>Tablet</option>
-                <option>Printer</option>
-                <option>Phone</option>
-                <option>Network</option>
-                <option>Other</option>
-            </select>
-        </p>
+        <?php $adding_job = true; include('includes/form-job.php'); ?>
         <p>
             <input type="submit" value="Add Job" />
         </p>
@@ -51,7 +22,7 @@ function shortcode_admin_add_job_form( $atts ){
 		$id = db_query($sql);
 		
 		if ($id) {
-			echo '<p>Job Added</p>';
+			echo '<p>Job Added Successfully.</p><p><a href="/manage/jobs/edit/?job_id='.$id.'">Edit Job &gt;</a> &nbsp; <a href="/manage/jobs/finish/?job_id='.$id.'">Finish Job &gt;</a></p>';
 		} else {
 			echo '<p>WTF Mate, fill out form correctly.</p>';
 		}

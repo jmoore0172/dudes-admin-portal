@@ -1,5 +1,6 @@
 <?php
 function shortcode_admin_edit_job_form( $atts ){
+	global $the_dudes, $job_type, $device_type, $general_form_error_msg;
 	ob_start();
 	
 	if (!isset($_REQUEST['job_id'])) {
@@ -59,7 +60,7 @@ function shortcode_admin_edit_job_form( $atts ){
 					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/">Edit Other Jobs &gt;</a>
 				</p>
 			<?php } else {
-				echo '<p>WTF Mate, fill out form correctly.</p>';
+				echo $general_form_error_msg;
 			}
 		}
 		return ob_get_clean();

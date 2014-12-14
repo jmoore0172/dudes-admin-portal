@@ -1,15 +1,14 @@
 <?php
-function shortcode_admin_add_job_form( $atts ){
-	global $the_dudes, $job_type, $device_type, $general_form_error_msg;
+function shortcode_admin_add_invoice_form( $atts ){
 	ob_start();
 	if (!isset($_REQUEST['JobStart'])) {
-		$customer = db_query('SELECT CustomerName FROM `CustomerInfo` WHERE CustomerID = \''.$_REQUEST['customer_id'].'\'');
+		//$customer = db_query('SELECT CustomerName FROM `CustomerInfo` WHERE CustomerID = \''.$_REQUEST['customer_id'].'\'');
 ?>
 
 <div class="Form-Handle">
-	<h2>Adding Job for: <?php echo $customer[0]['CustomerName']; ?></h2>
+
     <form action="" method="POST">
-        <?php $adding_job = true; include('includes/form-job.php'); ?>
+        <?php $adding_invoice = true; include('includes/form-invoice.php'); ?>
         <p>
             <input type="submit" value="Add Job" />
         </p>
@@ -18,11 +17,6 @@ function shortcode_admin_add_job_form( $atts ){
 
 <?php
 	} else {
-		foreach($_REQUEST as $val) {
-			if ($val === 'NULL') {
-				die($general_form_error_msg);
-			}
-		}
 		$sql = 'INSERT INTO `JobInfo` (CustomerID, JobType, StartDate, DudeID, DeviceType) VALUES (\''.$_REQUEST['customer_id'].'\', \''.$_REQUEST['JobType'].'\', \''.$_REQUEST['JobStart'].'\', \''.$_REQUEST['JobDude'].'\', \''.$_REQUEST['DeviceType'].'\')';
 		
 		$id = db_query($sql);
@@ -37,5 +31,5 @@ function shortcode_admin_add_job_form( $atts ){
 	return ob_get_clean();
 }
 
-add_shortcode( 'admin-add-job-form', 'shortcode_admin_add_job_form' );
+add_shortcode( 'admin-add-invoice-form', 'shortcode_admin_add_invoice_form' );
 ?>

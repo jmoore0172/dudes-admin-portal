@@ -3,7 +3,7 @@ function shortcode_admin_edit_job_form( $atts ){
 	ob_start();
 	
 	if (!isset($_REQUEST['job_id'])) {
-		$jobs = db_query('SELECT * FROM `JobInfo` WHERE EndDate IS NULL ORDER BY JobID DESC');
+		$jobs = db_query('SELECT * FROM `JobInfo` WHERE EndDate IS NULL AND HideJob <> 1 ORDER BY JobID DESC');
 		
 		if ($jobs && !empty($jobs)) {
 			echo '<ul>';
@@ -12,8 +12,11 @@ function shortcode_admin_edit_job_form( $atts ){
 				$customer = db_query('SELECT * FROM `CustomerInfo` WHERE CustomerID = '.$job['CustomerID']);
 				$customer = $customer[0];
 				?>
-				
-				<li><a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $job['JobID']; ?>">Edit Job</a> &mdash; <?php echo $customer['CustomerName']; ?> : <?php echo $job['JobType']; ?></li>
+				<li>
+					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/edit/?job_id=<?php echo $job['JobID']; ?>">Edit</a> &nbsp;|&nbsp;
+					<a href="<?php echo get_bloginfo('url'); ?>/manage/jobs/finish/?job_id=<?php echo $job['JobID']; ?>">Finish</a> &mdash;
+					<strong><?php echo $customer['CustomerName']; ?></strong> : <?php echo $job['JobType']; ?>
+				</li>
 			<?php }
 			
 			echo '</ul>';

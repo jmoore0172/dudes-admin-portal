@@ -21,6 +21,9 @@ function shortcode_admin_add_invoice_form( $atts ){
 			'CustomerID' 	=> $_REQUEST['CustomerID'],
 			'JobID' 		=> $_REQUEST['JobID'],
 			'LineItems' 	=> $_REQUEST['LineItems'],
+			'IssueDate'		=> $_REQUEST['IssueDate'],
+			'DueDate'		=> $_REQUEST['DueDate'],
+			'Notes'			=> $_REQUEST['Notes'],
 			'InvoiceTotal'	=> $_REQUEST['InvoiceTotal']
 		);
 		$id = db_insert('InvoiceInfo', $data);

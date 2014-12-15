@@ -94,7 +94,14 @@
 	
 	<?= $invoice_footer_msg ?>
 	
+	<p class="notes">
+		Notes:
+		<textarea name="Notes"></textarea>
+		<div style="clear: both;"></div>
+	</p>
+	
 	<input type="hidden" name="CustomerID" value="<?= $customer['CustomerID'] ?>" />
 	<input type="hidden" name="JobID" value="<?= $job['JobID'] ?>" />
+	<input type="hidden" name="LineItems" value="" />
 
 <?php endif; ?>

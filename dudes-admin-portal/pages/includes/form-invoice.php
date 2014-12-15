@@ -1,32 +1,25 @@
-<?php if (!$job_selected) :
-	$jobs = get_jobs('finished'); ?>
-
-	<p>Select Job: 
-		<select name="job_id">
-			<option value="NULL">(Select)</option>
-        
-	        <?php foreach($jobs as $job) :
-	        	$customer = get_customer($job['CustomerID']); ?>
-	        	
-				<option<?php echo isset($_REQUEST['job_id']) ? form_selected_state($job['JobID'], $_REQUEST['job_id']) : ''; ?> value="<?php echo $job['JobID']; ?>">
-					<?php echo $customer['CustomerName']; ?></strong> : <?php echo $job['JobType']; ?>
-				</option>
-	        <?php endforeach; ?>
-		</select>
-	</p>
-
-<?php else:
-
-	$job = get_jobs($_REQUEST['job_id']);
+<?php
+	if (isset($_REQUEST['invoice_id'])) {
+		$invoice = db_query("SELECT * FROM InvoiceInfo WHERE InvoiceID = ".$_REQUEST['invoice_id']);
+		$invoice = $invoice[0];
+		$job = get_jobs($invoice['JobID']);
+		
+		$line_items = json_decode($invoice['LineItems'], true);
+	} else {
+		$job = get_jobs($_REQUEST['job_id']);
+		
+		$line_items = invoice_add_line_item_json(array(
+			"description" => $job['JobType'] . ' - ' . $job['DeviceType'],
+			"hours" => $job['JobHours'],
+			"rate" => $job['InvoiceRate'],
+			"total" => $job['InvoiceTotal']
+		));
+	}
 	$customer = get_customer($job['CustomerID']);
 	
-	$default_line_items = json_encode(invoice_add_line_item_json(array(
-		"description" => $job['JobType'] . ' - ' . $job['DeviceType'],
-		"hours" => $job['JobHours'],
-		"rate" => $job['InvoiceRate'],
-		"total" => $job['InvoiceTotal']
-	)));
-	?>
+	$total = isset($invoice['InvoiceTotal']) ? $invoice['InvoiceTotal'] : $job['InvoiceTotal'];
+?>
+
 	
 	<p><img src="<?= get_bloginfo('url') ?>/wp-content/uploads/2014/12/pc-dudes-logo.png" /></p>
 	
@@ -73,31 +66,38 @@
 			<th>Unit Price</th>
 			<th class="rightalign">Amount</th>
 		</tr>
+		
+		<?php foreach($line_items as $item) : ?>
+		
 		<tr>
 			<td>
-				<?= $job['JobType'] ?> - <?= $job['DeviceType'] ?>
-				<input type="hidden" name="description[<?= $job['JobID'] ?>]" value="<?= $job['JobType'] ?> - <?= $job['DeviceType'] ?>" />
+				<?= $item['description'] ?>
+				<input type="hidden" name="description[<?= $job['JobID'] ?>]" value="<?= $item['description'] ?>" />
 			</td>
 			<td>
-				<?= $job['JobHours'] ?>
-				<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $job['JobHours'] ?>" data-default="1" />
+				<?= $item['hours'] ?>
+				<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $item['hours'] ?>" data-default="1" />
 			</td>
 			<td>
-				<?= format_cash($job['InvoiceRate']) ?>
-				<input type="hidden" name="rate[<?= $job['JobID'] ?>]" value="<?= $job['InvoiceRate'] ?>" data-default="<?= $the_dudes[0]['rate'] ?>" />
+				<?= format_cash($item['rate']) ?>
+				<input type="hidden" name="rate[<?= $job['JobID'] ?>]" value="<?= $item['rate'] ?>" data-default="<?= $the_dudes[0]['rate'] ?>" />
 			</td>
 			<td class="rightalign">
-				<?= format_cash($job['InvoiceTotal']) ?>
+				<?= format_cash($item['total']) ?>
 				<input type="hidden" name="total[<?= $job['JobID'] ?>]" value="<?= $job['InvoiceTotal'] ?>" />
 			</td>
 		</tr>
+		
+		<?php endforeach; ?>
 	</table>
 	
-	<button class="add-item">Add Work Item</button>
+	<?php if (isset($editing_invoice)) : ?>
+		<button class="add-item">Add Work Item</button>
+	<?php endif; ?>
 	
 	<div class="invoice-total">
-		Invoice Total: &nbsp; <span class="dynamic-display"><?= format_cash($job['InvoiceTotal']) ?></span>
-		<input type="hidden" name="InvoiceTotal" value="<?= $job['InvoiceTotal'] ?>" />
+		Invoice Total: &nbsp; <span class="dynamic-display"><?= format_cash($total) ?></span>
+		<input type="hidden" name="InvoiceTotal" value="<?= $total ?>" />
 	</div>	
 	
 	<?= $invoice_footer_msg ?>
@@ -110,6 +110,4 @@
 	
 	<input type="hidden" name="CustomerID" value="<?= $customer['CustomerID'] ?>" />
 	<input type="hidden" name="JobID" value="<?= $job['JobID'] ?>" />
-	<input type="hidden" name="LineItems" value='<?= $default_line_items ?>' />
-
-<?php endif; ?>
+	<input type="hidden" name="LineItems" value='<?= json_encode($line_items) ?>' />

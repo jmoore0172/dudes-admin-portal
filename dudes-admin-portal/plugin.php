@@ -41,6 +41,8 @@ function admin_onload() {
 	include('pages/archived-jobs.php');
 	include('pages/add-invoice.php');
 	include('pages/edit-invoice.php');
+	include('pages/view-invoice.php');
+	include('pages/list-invoices.php');
 }
 
 add_action( 'wp_loaded', 'admin_onload' );

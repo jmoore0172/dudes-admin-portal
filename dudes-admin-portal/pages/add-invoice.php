@@ -9,7 +9,27 @@ function shortcode_admin_add_invoice_form( $atts ){
 ?>
 <div class="Form-Handle invoice-template">
 	<form action="" method="<?php echo ($job_selected) ? 'POST' : 'GET'; ?>">
-	    <?php $adding_invoice = true; include('includes/form-invoice.php'); ?>
+	
+		<?php if (!$job_selected) {
+			$jobs = get_jobs('finished'); ?>
+		
+			<p>Select Job: 
+				<select name="job_id">
+					<option value="NULL">(Select)</option>
+		        
+			        <?php foreach($jobs as $job) :
+			        	$customer = get_customer($job['CustomerID']); ?>
+			        	
+						<option<?php echo isset($_REQUEST['job_id']) ? form_selected_state($job['JobID'], $_REQUEST['job_id']) : ''; ?> value="<?php echo $job['JobID']; ?>">
+							<?php echo $customer['CustomerName']; ?></strong> : <?php echo $job['JobType']; ?>
+						</option>
+			        <?php endforeach; ?>
+				</select>
+			</p>
+		<?php } else {
+			include('includes/form-invoice.php');
+		} ?>
+
 	    <p>
 	        <input type="submit" value="Create Invoice" />
 	    </p>

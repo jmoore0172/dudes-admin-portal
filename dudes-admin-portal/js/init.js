@@ -7,7 +7,9 @@
 		
 		
 		//issue/due dates
-		var invoice = $('.invoice-template');
+		var invoice = $('.invoice-template'),
+			table = invoice.find('.line-items'),
+			defaultJob = table.find('tr:nth-child(2)');
 		
 		invoice.find('[name="DueDateSelect"]').on('change', function() {
 			var dateEle = invoice.find('[name=DueDate]');
@@ -35,6 +37,7 @@
 						table.find('tr [name*=total]').each(function() {
 							grandTotal += Number($(this).val());
 						});
+						invoice.find('[name=InvoiceTotal]').val(grandTotal);
 						
 						grandTotal = grandTotal.toFixed(2).replace(/./g, function(c, i, a) {
 						    return i && c !== "." && !((a.length - i) % 3) ? ',' + c : c;
@@ -42,13 +45,11 @@
 						
 						invoice.find('.invoice-total .dynamic-display').html('$' + grandTotal);
 						
-						//console.log('updating to '+grandTotal);
 					}).trigger('keyup');
 				})
 			},
 			
-			table = invoice.find('.line-items'),
-			row = table.find('tr:nth-child(2)').clone().addClass('custom').each(function() {
+			row = defaultJob.clone().addClass('custom').each(function() {
 				var cellCount = 0,
 					row = $(this);
 				
@@ -84,6 +85,28 @@
 				
 			updateHrs(row);
 			return false;
+		});
+		
+		//add all line items to field value on submit
+		invoice.find('form').on('submit', function() {
+			var items = [],
+				form = $(this),			
+				allJobs = $.merge( defaultJob, table.find('tr.custom') );
+			
+			allJobs.each(function() {
+				var row = $(this);
+				items.push({
+					"description"	: row.find('[name*=description]').val(),
+					"hours"			: row.find('[name*=hours]').val(),
+					"rate"			: row.find('[name*=rate]').val(),
+					"total"			: row.find('[name*=total]').val()
+				});
+			});
+			
+			form.find('[name=LineItems]').val( JSON.stringify(items) );
+			updateHrs(allJobs)
+			
+			return true;
 		});
 	});
 })(jQuery);

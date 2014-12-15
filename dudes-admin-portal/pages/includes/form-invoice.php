@@ -18,7 +18,15 @@
 <?php else:
 
 	$job = get_jobs($_REQUEST['job_id']);
-	$customer = get_customer($job['CustomerID']); ?>
+	$customer = get_customer($job['CustomerID']);
+	
+	$default_line_items = json_encode(invoice_add_line_item_json(array(
+		"description" => $job['JobType'] . ' - ' . $job['DeviceType'],
+		"hours" => $job['JobHours'],
+		"rate" => $job['InvoiceRate'],
+		"total" => $job['InvoiceTotal']
+	)));
+	?>
 	
 	<p><img src="<?= get_bloginfo('url') ?>/wp-content/uploads/2014/12/pc-dudes-logo.png" /></p>
 	
@@ -102,6 +110,6 @@
 	
 	<input type="hidden" name="CustomerID" value="<?= $customer['CustomerID'] ?>" />
 	<input type="hidden" name="JobID" value="<?= $job['JobID'] ?>" />
-	<input type="hidden" name="LineItems" value="" />
+	<input type="hidden" name="LineItems" value='<?= $default_line_items ?>' />
 
 <?php endif; ?>

@@ -58,4 +58,15 @@ function get_jobs($slug) {
 		return (isset($result) && !empty($result)) ? $result : false;
 	}
 }
+
+function invoice_add_line_item_json($item, $object=NULL) {
+	if (!isset($object)) {
+		$object = array();
+	} elseif (is_string($object)) {
+		$object = json_decode($object);
+	}
+	$object []= $item;
+	
+	return $object;
+}
 ?>

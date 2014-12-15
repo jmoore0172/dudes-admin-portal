@@ -34,7 +34,7 @@ function shortcode_admin_finish_job_form( $atts ){
         	Hours on the Job: <input name="JobHours" type="text" />
         </p>
         <p>
-        	Job Notes (visible to client): <textarea name="JobNotes"></textarea>
+        	Job Notes (public): <textarea name="JobNotes"></textarea>
         </p>
         <p>
         	Job Notes (private): <textarea name="JobNotesPriv"></textarea>

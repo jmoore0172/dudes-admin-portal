@@ -1,0 +1,7 @@
+.invoice-template .rightalign { text-align: right; }
+.invoice-template th { white-space: nowrap; }
+.invoice-template td,
+.invoice-template th { padding: 4px; }
+.invoice-template .invoice-total { text-align: right; font-weight: bold; }
+.invoice-template td input { float: none !important; width: 80% !important; }
+.invoice-template .line-items .remove { margin-right: 6px; }

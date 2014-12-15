@@ -1,13 +1,3 @@
-<style>
-.invoice-template .rightalign { text-align: right; }
-.invoice-template th { white-space: nowrap; }
-.invoice-template td,
-.invoice-template th { padding: 4px; }
-.invoice-template .invoice-total { text-align: right; font-weight: bold; }
-.invoice-template td input { float: none !important; width: 80% !important; }
-.invoice-template .line-items .remove { margin-right: 6px; }
-</style>
-
 <?php if (!$job_selected) :
 	$jobs = get_jobs('finished'); ?>
 
@@ -62,18 +52,6 @@
 
 	<input type="text" name="DueDate" class="datepicker"  value="<?php echo date('Y-m-d', strtotime("+30 days")); ?>" />
 	<div style="clear: both;"></div>
-	
-	<script>
-	(function($) {
-		$('[name="DueDateSelect"]').on('change', function() {
-			if ($(this).val() === 'custom') {
-				$('[name=DueDate]').val('').focus();
-			} else {
-				$('[name=DueDate]').val($(this).val());
-			}
-		}).trigger('change');
-	})(jQuery);
-	</script>
 </p>
 
 <hr />
@@ -92,50 +70,23 @@
 		</td>
 		<td>
 			<?= $job['JobHours'] ?>
-			<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $job['JobHours'] ?>" />
+			<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $job['JobHours'] ?>" data-default="1" />
 		</td>
 		<td>
 			<?= format_cash($job['InvoiceRate']) ?>
-			<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $job['InvoiceRate'] ?>" />
+			<input type="hidden" name="rate[<?= $job['JobID'] ?>]" value="<?= $job['InvoiceRate'] ?>" data-default="<?= $the_dudes[0]['rate'] ?>" />
 		</td>
 		<td class="rightalign">
 			<?= format_cash($job['InvoiceTotal']) ?>
-			<input type="hidden" name="hours[<?= $job['JobID'] ?>]" value="<?= $job['InvoiceTotal'] ?>" />
+			<input type="hidden" name="total[<?= $job['JobID'] ?>]" value="<?= $job['InvoiceTotal'] ?>" />
 		</td>
 	</tr>
 </table>
 
 <button class="add-item">Add Work Item</button>
 
-<script>
-(function($) {
-	$('button.add-item').on('click', function() {
-		var model = $('.line-items tr:nth-child(2)');
-		model.clone().each(function() {
-			var count = 0;
-			$(this).find('td').each(function() {
-				var field = $(this).find('input').clone().val('').attr('type', 'text');
-				$(this).html('').append(field);
-				
-				if (count == 0) {
-					$(this).prepend('<a class="remove" href="#">X</a>');
-				}
-				
-				count++;
-				
-				$(this).find('.remove').on('click', function() {
-					field.closest('tr').remove();
-					return false;
-				});
-			});
-		}).appendTo('.line-items');
-		return false;
-	});
-})(jQuery);
-</script>
-
 <div class="invoice-total">
-	Invoice Total: &nbsp; <?= format_cash($job['InvoiceTotal']) ?>
+	Invoice Total: &nbsp; <span class="dynamic-display"><?= format_cash($job['InvoiceTotal']) ?></span>
 	<input type="hidden" name="InvoiceTotal" value="<?= $job['InvoiceTotal'] ?>" />
 </div>	
 

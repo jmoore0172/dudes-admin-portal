@@ -1,6 +1,6 @@
 <?php
 function shortcode_admin_add_invoice_form( $atts ){
-	global $general_form_error_msg, $invoice_footer_msg;
+	global $general_form_error_msg, $invoice_footer_msg, $the_dudes;
 	ob_start();
 	$submitted = !empty($_POST);
 	$job_selected = isset($_REQUEST['job_id']);

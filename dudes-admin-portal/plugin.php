@@ -22,6 +22,7 @@ function admin_onload() {
 
 	wp_enqueue_style( 'jquery-ui-css', plugins_url('/js/jquery-ui-1.11.2.custom/jquery-ui.min.css', __FILE__));
 	wp_enqueue_style( 'jquery-ui-theme', plugins_url('/js/jquery-ui-1.11.2.custom/jquery-ui.theme.min.css', __FILE__));
+	wp_enqueue_style( 'pc-dudes-admin', plugins_url('/css/styles.css', __FILE__));
 	
 	wp_enqueue_script( 'jquery-ui-custom', plugins_url('/js/jquery-ui-1.11.2.custom/jquery-ui.min.js', __FILE__), array('jquery'));
 	wp_enqueue_script( 'pc-dudes-admin', plugins_url('/js/init.js', __FILE__), array('jquery-ui-custom'));
